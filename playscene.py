@@ -4,6 +4,7 @@ from player import Player
 from water import Water
 import interface
 import directions
+import keys
 
 class PlayScene(Scene):
     def draw_tile(self, x, y, display):

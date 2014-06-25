@@ -1,3 +1,5 @@
+import keys
+
 INVALID = 0
 NORTH = 1
 EAST = 2
@@ -29,13 +31,13 @@ def delta(direction):
         return (0, 0)
 
 def from_key(key):
-    if key == 'k':
+    if key == keys.UP:
         return NORTH
-    elif key == 'l':
+    elif key == keys.RIGHT:
         return EAST
-    elif key == 'j':
+    elif key == keys.DOWN:
         return SOUTH
-    elif key == 'h':
+    elif key == keys.LEFT:
         return WEST
     else:
         return INVALID

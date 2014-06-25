@@ -1,5 +1,6 @@
 import interface
 import scene
+import keys
 from startscene import StartScene
 
 def main():
@@ -10,10 +11,14 @@ def main():
         current_scene = scene
 
     current_scene = StartScene(display)
-    ch = ' '
-    while ch != 'q':
-        ch = display.get_input()
-        current_scene.update(display, ch)
+    key = None
+    while key != keys.QUIT:
+        key = display.get_input()
+        if key in keys.bindings:
+            key = keys.bindings[key]
+        else:
+            key = None
+        current_scene.update(display, key)
         if current_scene.next_scene != None:
             current_scene = current_scene.next_scene
     display.__uninit__()

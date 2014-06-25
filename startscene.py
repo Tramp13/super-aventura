@@ -1,6 +1,7 @@
 from scene import Scene
 from menu import Menu
 from playscene import PlayScene
+import keys
 import interface
 
 class StartScene(Scene):
@@ -39,11 +40,11 @@ class StartScene(Scene):
                          interface.WHITE,
                          interface.BLACK,
                          False)
-        if key == 'j':
+        if key == keys.DOWN:
             self.menu.select_next()
-        if key == 'k':
+        if key == keys.UP:
             self.menu.select_previous()
-        if key == 'x':
+        if key == keys.SELECT:
             _, callback = self.menu.get_selection()
             callback()
             return
