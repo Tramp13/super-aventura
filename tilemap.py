@@ -1,6 +1,6 @@
 from sprite import Sprite
 from entity import Entity
-from water import Water
+from tiles import Water, Tree
 import interface
 
 def char_to_entity(x, y, char):
@@ -8,9 +8,7 @@ def char_to_entity(x, y, char):
     solid = None
     name = None
     if (char == 'T'):
-        sprite = Sprite(char, interface.GREEN, interface.BLACK, False)
-        solid = True
-        name = 'tree'
+        return Tree(x, y)
     if (char == '.'):
         sprite = Sprite(char, interface.GREEN, interface.BLACK, False)
         solid = False

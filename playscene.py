@@ -1,7 +1,7 @@
 from scene import Scene
 from tilemap import Tilemap
 from player import Player
-from water import Water
+from tiles import Water, Tree
 import interface
 import directions
 import keys
@@ -57,16 +57,24 @@ class PlayScene(Scene):
         if (direction != directions.INVALID):
             self.player.move(direction)
             tile = self.tilemap.get(self.player.x, self.player.y)
+
             if (tile.solid):
-                if (type(tile) == Water):
-                    fish = tile.fish()
-                    if fish != None:
-                        self.log('You catch a fish!')
-                        self.player.inventory.append(fish)
-                    else:
-                        self.log('You disturb the water.')
-                    self.draw_tile(self.player.x, self.player.y, display)
                 self.player.move_back()
+            
+            if (type(tile) == Water):
+                fish = tile.fish()
+                if fish != None:
+                    self.log('You catch a fish!')
+                    self.player.inventory.append(fish)
+                else:
+                    self.log('You disturb the water.')
+
+            if (type(tile) == Tree):
+                log = tile.chop()
+                if log != None:
+                    self.log('You cut down the tree, and aquire some logs')
+                    self.player.inventory.append(log)
+
 
         for y in range(self.tilemap.height):
             for x in range(self.tilemap.width):
