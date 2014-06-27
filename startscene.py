@@ -11,12 +11,7 @@ class StartScene(Scene):
             self.next_scene = PlayScene(display)
 
         def quit_game():
-            display.put_string(10,
-                               10,
-                               "Ba",
-                               interface.WHITE,
-                               interface.BLACK,
-                               False)
+            self.game_over = True
 
         self.menu.add_option(("Start", start_game))
         self.menu.add_option(("Quit", quit_game))

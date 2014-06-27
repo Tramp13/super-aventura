@@ -13,7 +13,7 @@ def main():
 
     current_scene = StartScene(display)
     key = None
-    while key != 'QUIT':
+    while key != 'QUIT' and current_scene.game_over != True:
         key = display.get_input()
         if key in bindings:
             key = bindings[key]

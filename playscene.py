@@ -5,21 +5,9 @@ from tiles import Water, Tree
 import interface
 import directions
 import keys
-from point import Point
+from camera import Camera
 
 class PlayScene(Scene):
-    def adjust_camera(self, target_x, target_y):
-        self.camera.x = target_x - 14
-        self.camera.y = target_y - 7
-        if (target_x < 14):
-            self.camera.x = 0
-        if (target_y < 7):
-            self.camera.y = 0
-        if (target_x + 15 >= self.tilemap.width):
-            self.camera.x = self.tilemap.width - 30
-        if (target_y + 7 >= self.tilemap.height):
-            self.camera.y = self.tilemap.height - 15
-
     def draw_tile(self, x, y, display):
         display_x = x - self.camera.x
         display_y = y - self.camera.y
@@ -42,13 +30,13 @@ class PlayScene(Scene):
         display.clear_line(16)
         if (len(self.log_messages) > 0):
             display.put_string(0,
-                               15,
+                               self.camera.height,
                                self.log_messages[0],
                                interface.WHITE,
                                interface.BLACK)
         if (len(self.log_messages) > 1):
             display.put_string(0,
-                               16,
+                               self.camera.height + 1,
                                self.log_messages[1],
                                interface.BLACK,
                                interface.BLACK,
@@ -61,13 +49,13 @@ class PlayScene(Scene):
         super(PlayScene, self).__init__(display)
         display.clear()
         self.log_messages = []
-        self.camera = Point(0, 0)
         self.tilemap = Tilemap('map.txt')
-        for y in range(self.camera.y, self.camera.y + 15):
-            for x in range(self.camera.x, self.camera.x + 30):
+        self.camera = Camera(35, 15, self.tilemap.width, self.tilemap.height)
+        for y in range(self.camera.y, self.camera.y + self.camera.height):
+            for x in range(self.camera.x, self.camera.x + self.camera.width):
                 self.draw_tile(x, y, display)
 
-        self.player = Player(14, 7)
+        self.player = Player(self.camera.half_width, self.camera.half_height)
         self.player_id = 0
         self.entities = [self.player]
         self.draw_entity(0, display)
@@ -96,9 +84,9 @@ class PlayScene(Scene):
                     self.log('You cut down the tree, and aquire some logs')
                     self.player.inventory.append(log)
 
-        self.adjust_camera(self.player.x, self.player.y)
-        for y in range(self.camera.y, self.camera.y + 15):
-            for x in range(self.camera.x, self.camera.x + 30):
+        self.camera.center_on(self.player.x, self.player.y)
+        for y in range(self.camera.y, self.camera.y + self.camera.height):
+            for x in range(self.camera.x, self.camera.x + self.camera.width):
                 self.tilemap.get(x, y).update()
                 self.draw_tile(x, y, display)
 
