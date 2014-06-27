@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import interface
 import scene
 from keys import load_bindings, bindings

@@ -5,12 +5,27 @@ from tiles import Water, Tree
 import interface
 import directions
 import keys
+import curses
 from camera import Camera
 
 class PlayScene(Scene):
+    def draw_frame(self, display):
+        fg = interface.WHITE
+        bg = interface.BLACK
+        display.put_char(0, 0, curses.ACS_ULCORNER, fg, bg)
+        display.put_char(36, 0, curses.ACS_URCORNER, fg, bg)
+        display.put_char(0, 16, curses.ACS_LLCORNER, fg, bg)
+        display.put_char(36, 16, curses.ACS_LRCORNER, fg, bg)
+        for i in range(1, 36):
+            display.put_char(i, 0, curses.ACS_HLINE, fg, bg)
+            display.put_char(i, 16, curses.ACS_HLINE, fg, bg)
+        for i in range(1, 16):
+            display.put_char(0, i, curses.ACS_VLINE, fg, bg)
+            display.put_char(36, i, curses.ACS_VLINE, fg, bg)
+
     def draw_tile(self, x, y, display):
-        display_x = x - self.camera.x
-        display_y = y - self.camera.y
+        display_x = (x - self.camera.x) + 1
+        display_y = (y - self.camera.y) + 1
         sprite = self.tilemap.get(x, y).sprite
         display.put_char(display_x,
                          display_y,
@@ -20,23 +35,23 @@ class PlayScene(Scene):
                          sprite.bold)
 
     def draw_entity(self, entity_id, display):
-        x = self.entities[entity_id].x - self.camera.x
-        y = self.entities[entity_id].y - self.camera.y
+        x = (self.entities[entity_id].x - self.camera.x) + 1
+        y = (self.entities[entity_id].y - self.camera.y) + 1
         sprite = self.entities[entity_id].sprite
         display.put_char(x, y, sprite.char, sprite.fg, sprite.bg, sprite.bold)
 
     def print_log(self, display):
-        display.clear_line(15)
-        display.clear_line(16)
+        display.clear_line(self.camera.height + 2)
+        display.clear_line(self.camera.height + 3)
         if (len(self.log_messages) > 0):
             display.put_string(0,
-                               self.camera.height,
+                               self.camera.height + 2,
                                self.log_messages[0],
                                interface.WHITE,
                                interface.BLACK)
         if (len(self.log_messages) > 1):
             display.put_string(0,
-                               self.camera.height + 1,
+                               self.camera.height + 3,
                                self.log_messages[1],
                                interface.BLACK,
                                interface.BLACK,
@@ -50,6 +65,7 @@ class PlayScene(Scene):
         display.clear()
         self.log_messages = []
         self.tilemap = Tilemap('map.txt')
+        self.draw_frame(display)
         self.camera = Camera(35, 15, self.tilemap.width, self.tilemap.height)
         for y in range(self.camera.y, self.camera.y + self.camera.height):
             for x in range(self.camera.x, self.camera.x + self.camera.width):
