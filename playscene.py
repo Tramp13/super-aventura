@@ -5,23 +5,32 @@ from tiles import Water, Tree
 import interface
 import directions
 import keys
-import curses
 from camera import Camera
+import curses
 
 class PlayScene(Scene):
     def draw_frame(self, display):
+        width, height = display.get_size()
         fg = interface.WHITE
         bg = interface.BLACK
-        display.put_char(0, 0, curses.ACS_ULCORNER, fg, bg)
-        display.put_char(36, 0, curses.ACS_URCORNER, fg, bg)
-        display.put_char(0, 16, curses.ACS_LLCORNER, fg, bg)
-        display.put_char(36, 16, curses.ACS_LRCORNER, fg, bg)
-        for i in range(1, 36):
+        for i in range(width):
             display.put_char(i, 0, curses.ACS_HLINE, fg, bg)
             display.put_char(i, 16, curses.ACS_HLINE, fg, bg)
-        for i in range(1, 16):
+            display.put_char(i, height - 1, curses.ACS_HLINE, fg, bg)
+        for i in range(height):
             display.put_char(0, i, curses.ACS_VLINE, fg, bg)
+            display.put_char(width - 1, i, curses.ACS_VLINE, fg, bg)
+        for i in range(16):
             display.put_char(36, i, curses.ACS_VLINE, fg, bg)
+
+        display.put_char(0, 0, curses.ACS_ULCORNER, fg, bg)
+        display.put_char(36, 0, curses.ACS_TTEE, fg, bg)
+        display.put_char(0, 16, curses.ACS_LTEE, fg, bg)
+        display.put_char(36, 16, curses.ACS_BTEE, fg, bg)
+        display.put_char(0, height - 1, curses.ACS_LLCORNER, fg, bg)
+        display.put_char(width - 1, height - 1, curses.ACS_LRCORNER, fg, bg)
+        display.put_char(width - 1, 0, curses.ACS_URCORNER, fg, bg)
+        display.put_char(width, - 1, 16, curses.ACS_RTEE, fg, bg)
 
     def draw_tile(self, x, y, display):
         display_x = (x - self.camera.x) + 1
@@ -41,21 +50,21 @@ class PlayScene(Scene):
         display.put_char(x, y, sprite.char, sprite.fg, sprite.bg, sprite.bold)
 
     def print_log(self, display):
-        display.clear_line(self.camera.height + 2)
-        display.clear_line(self.camera.height + 3)
-        if (len(self.log_messages) > 0):
-            display.put_string(0,
-                               self.camera.height + 2,
-                               self.log_messages[0],
-                               interface.WHITE,
-                               interface.BLACK)
-        if (len(self.log_messages) > 1):
-            display.put_string(0,
-                               self.camera.height + 3,
-                               self.log_messages[1],
-                               interface.BLACK,
-                               interface.BLACK,
-                               True)
+        width, height = display.get_size()
+        for y in range(17, height - 1):
+            for x in range(1, width - 1):
+                display.put_char(x, y, ' ', 0, 0)
+        for i in range(17, height - 1):
+            if (len(self.log_messages) > i - 17):
+                color = interface.BLACK
+                if i == 17:
+                    color = interface.WHITE
+                display.put_string(1,
+                                   i,
+                                   self.log_messages[i - 17],
+                                   color,
+                                   interface.BLACK,
+                                   False if i == 17 else True)
 
     def log(self, text):
         self.log_messages.insert(0, text)

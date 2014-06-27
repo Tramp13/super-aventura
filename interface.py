@@ -13,8 +13,11 @@ def get_color_pair(fg, bg):
     return fg + (bg * 8) + 1
 
 class Interface(object):
-    def __init__(self):
-        self.stdscr = curses.initscr()
+    def __init__(self, stdscr = None):
+        if (stdscr == None):
+            self.stdscr = curses.initscr()
+        else:
+            self.stdscr = stdscr
         curses.start_color()
         for bg in range(0, 8):
             for fg in range(0, 8):
@@ -28,7 +31,10 @@ class Interface(object):
         attribute = curses.color_pair(get_color_pair(fg, bg))
         if bold:
             attribute |= curses.A_BOLD
-        self.stdscr.addch(y, x, char, attribute)
+        try:
+            self.stdscr.addch(y, x, char, attribute)
+        except curses.error:
+            pass
 
     def put_string(self, x, y, string, fg, bg, bold = False):
         for char in string:
@@ -47,6 +53,10 @@ class Interface(object):
 
     def get_input(self):
         return self.stdscr.getkey()
+
+    def get_size(self):
+        height, width = self.stdscr.getmaxyx()
+        return (width, height)
 
     def __uninit__(self):
         curses.nocbreak()

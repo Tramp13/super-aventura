@@ -2,11 +2,12 @@
 
 import interface
 import scene
+import curses
 from keys import load_bindings, bindings
 from startscene import StartScene
 
-def main():
-    display = interface.Interface()
+def main(stdscr):
+    display = interface.Interface(stdscr)
     load_bindings()
     current_scene = None
 
@@ -27,4 +28,4 @@ def main():
     display.__uninit__()
 
 if __name__ == "__main__":
-    main()
+    curses.wrapper(main)
