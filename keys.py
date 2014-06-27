@@ -29,5 +29,7 @@ def load_bindings():
     binding_data = binding_data.split('\n')
     for i in binding_data:
         binding = i.split(':')
+        if len(binding) < 2:
+            continue
         bindings[binding[0]] = binding[1]
     binding_file.close()
