@@ -31,13 +31,13 @@ def delta(direction):
         return (0, 0)
 
 def from_key(key):
-    if key == keys.UP:
+    if key == 'UP':
         return NORTH
-    elif key == keys.RIGHT:
+    elif key == 'RIGHT':
         return EAST
-    elif key == keys.DOWN:
+    elif key == 'DOWN':
         return SOUTH
-    elif key == keys.LEFT:
+    elif key == 'LEFT':
         return WEST
     else:
         return INVALID

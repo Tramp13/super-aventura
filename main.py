@@ -1,10 +1,11 @@
 import interface
 import scene
-import keys
+from keys import load_bindings, bindings
 from startscene import StartScene
 
 def main():
     display = interface.Interface()
+    load_bindings()
     current_scene = None
 
     def switch_scene(scene):
@@ -12,10 +13,10 @@ def main():
 
     current_scene = StartScene(display)
     key = None
-    while key != keys.QUIT:
+    while key != 'QUIT':
         key = display.get_input()
-        if key in keys.bindings:
-            key = keys.bindings[key]
+        if key in bindings:
+            key = bindings[key]
         else:
             key = None
         current_scene.update(display, key)
