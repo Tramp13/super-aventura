@@ -33,5 +33,23 @@ class Tilemap(object):
                 self.tiles[y].append(tile)
         data_file.close()
 
+    def get_x(self, x):
+        if x < 0:
+            return self.get_x(x + self.width)
+        elif x >= self.width:
+            return self.get_x(x - self.width)
+        else:
+            return x
+
+    def get_y(self, y):
+        if y < 0:
+            return self.get_y(y + self.height)
+        elif y >= self.height:
+            return self.get_y(y - self.height)
+        else:
+            return y
+
     def get(self, x, y):
+        #new_x = self.get_x(x)
+        #new_y = self.get_y(y)
         return self.tiles[y][x]
