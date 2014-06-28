@@ -40,8 +40,8 @@ class PlayScene(Scene):
     def update_and_draw_view(self, display):
         for y in range(self.camera.y, self.camera.y + self.camera.height):
             for x in range(self.camera.x, self.camera.x + self.camera.width):
-                self.draw_tile(x, y, display)
                 self.tilemap.get(x, y).update()
+                self.draw_tile(x, y, display)
                 
 
     def draw_tile(self, x, y, display):
