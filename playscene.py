@@ -32,6 +32,18 @@ class PlayScene(Scene):
         display.put_char(width - 1, 0, curses.ACS_URCORNER, fg, bg)
         display.put_char(width, - 1, 16, curses.ACS_RTEE, fg, bg)
 
+    def draw_view(self, display):
+        for y in range(self.camera.y, self.camera.y + self.camera.height):
+            for x in range(self.camera.x, self.camera.x + self.camera.width):
+                self.draw_tile(x, y, display)
+
+    def update_and_draw_view(self, display):
+        for y in range(self.camera.y, self.camera.y + self.camera.height):
+            for x in range(self.camera.x, self.camera.x + self.camera.width):
+                self.draw_tile(x, y, display)
+                self.tilemap.get(x, y).update()
+                
+
     def draw_tile(self, x, y, display):
         display_x = (x - self.camera.x) + 1
         display_y = (y - self.camera.y) + 1
@@ -76,9 +88,8 @@ class PlayScene(Scene):
         self.tilemap = Tilemap('map.txt')
         self.draw_frame(display)
         self.camera = Camera(35, 15, self.tilemap.width, self.tilemap.height)
-        for y in range(self.camera.y, self.camera.y + self.camera.height):
-            for x in range(self.camera.x, self.camera.x + self.camera.width):
-                self.draw_tile(x, y, display)
+
+        self.draw_view(display)
 
         self.player = Player(self.camera.half_width, self.camera.half_height)
         self.player_id = 0
@@ -87,6 +98,11 @@ class PlayScene(Scene):
         display.flush()
 
     def update(self, display, key):
+        if (key == 'RESIZE'):
+            display.clear()
+            self.draw_frame(display)
+            self.draw_view(display)
+            return
         direction = directions.from_key(key)
         if (direction != directions.INVALID):
             self.player.move(direction)
@@ -110,11 +126,7 @@ class PlayScene(Scene):
                     self.player.inventory.append(log)
 
         self.camera.center_on(self.player.x, self.player.y)
-        for y in range(self.camera.y, self.camera.y + self.camera.height):
-            for x in range(self.camera.x, self.camera.x + self.camera.width):
-                self.tilemap.get(x, y).update()
-                self.draw_tile(x, y, display)
-
+        self.update_and_draw_view(display)
 
         self.draw_entity(self.player_id, display)
 

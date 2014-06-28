@@ -12,7 +12,7 @@ l:RIGHT
 j:DOWN
 h:LEFT"""
 
-bindings = {}
+bindings = {'KEY_RESIZE':'RESIZE'}
 
 def load_bindings():
     if (os.path.isdir(os.path.expanduser('~/.adventure')) == False):
