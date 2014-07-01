@@ -112,12 +112,14 @@ class PlayScene(Scene):
             self.draw_view(display)
             return
         if key == 'DROP':
+            self.log('Drop what? (Directional keys to select.)')
+            self.print_log(display)
             fg = interface.WHITE
             bg = interface.BLACK
             selection = 0
             display.put_char(37, selection + 1, '>', fg, bg)
             display.flush()
-            while key != 'SELECT':
+            while True:
                 key = display.get_input()
                 display.put_char(37, selection + 1, ' ', 0, 0)
                 if key == 'UP':
@@ -128,9 +130,17 @@ class PlayScene(Scene):
                     selection += 1
                     if selection >= len(self.player.inventory):
                         selection = 0
+                if key == 'DROP' or key == 'SELECT':
+                    break
+                if key == 'q':
+                    return
                 display.put_char(37, selection + 1, '>', fg, bg)
                 display.flush()
-            self.entities.insert(0, self.player.drop(selection))
+            item = self.player.drop(selection)
+            self.entities.insert(0, item)
+            self.log('You drop the ' + item.name + '.')
+            self.draw_inventory(display)
+            self.print_log(display)
             return
                 
         direction = directions.from_key(key)
