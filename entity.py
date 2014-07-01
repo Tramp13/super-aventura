@@ -24,3 +24,6 @@ class Entity(object):
         x_delta, y_delta = directions.delta(directions.reverse(self.facing))
         self.x += x_delta
         self.y += y_delta
+
+    def lose(self, index):
+        return self.inventory.pop(index)

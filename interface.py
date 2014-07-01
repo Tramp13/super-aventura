@@ -1,4 +1,5 @@
 import curses
+from keys import load_bindings, bindings
 
 BLACK = curses.COLOR_BLACK
 RED = curses.COLOR_RED
@@ -26,6 +27,7 @@ class Interface(object):
         curses.cbreak()
         curses.curs_set(0)
         self.stdscr.keypad(True)
+        load_bindings()
 
     def put_char(self, x, y, char, fg, bg, bold = False):
         attribute = curses.color_pair(get_color_pair(fg, bg))
@@ -52,7 +54,11 @@ class Interface(object):
         self.stdscr.clrtoeol()
 
     def get_input(self):
-        return self.stdscr.getkey()
+        key = self.stdscr.getkey()
+        if key in bindings:
+            return bindings[key]
+        else:
+            return None
 
     def get_size(self):
         height, width = self.stdscr.getmaxyx()

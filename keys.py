@@ -10,7 +10,8 @@ q:QUIT
 k:UP
 l:RIGHT
 j:DOWN
-h:LEFT"""
+h:LEFT
+c:DROP"""
 
 bindings = {'KEY_RESIZE':'RESIZE'}
 

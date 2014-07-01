@@ -1,4 +1,5 @@
 import math
+from point import Point
 
 class Camera:
     def __init__(self, width, height, right_boundry, bottom_boundry):
@@ -22,3 +23,11 @@ class Camera:
             self.x = self.right_boundry - self.width
         if (target_y + self.half_height >= self.bottom_boundry):
             self.y = self.bottom_boundry - self.height
+
+    # This function iterates through all cells that are visible to the camera
+    def __iter__(self):
+        cells = []
+        for y in range(self.y, self.y + self.height):
+            for x in range(self.x, self.x + self.width):
+                cells.append(Point(x, y))
+        return iter(cells)

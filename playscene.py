@@ -33,15 +33,13 @@ class PlayScene(Scene):
         display.put_char(width, - 1, 16, curses.ACS_RTEE, fg, bg)
 
     def draw_view(self, display):
-        for y in range(self.camera.y, self.camera.y + self.camera.height):
-            for x in range(self.camera.x, self.camera.x + self.camera.width):
-                self.draw_tile(x, y, display)
+        for i in self.camera:
+            self.draw_tile(i.x, i.y, display)
 
     def update_and_draw_view(self, display):
-        for y in range(self.camera.y, self.camera.y + self.camera.height):
-            for x in range(self.camera.x, self.camera.x + self.camera.width):
-                self.tilemap.get(x, y).update()
-                self.draw_tile(x, y, display)
+        for i in self.camera:
+            self.tilemap.get(i.x, i.y).update()
+            self.draw_tile(i.x, i.y, display)
                 
 
     def draw_tile(self, x, y, display):
@@ -81,6 +79,16 @@ class PlayScene(Scene):
     def log(self, text):
         self.log_messages.insert(0, text)
 
+    def draw_inventory(self, display):
+        width, height = display.get_size()
+        for y in range(1, 16):
+            for x in range(37, width - 1):
+                display.put_char(x, y, ' ', 0, 0)
+        for i in range(len(self.player.inventory)):
+            name = self.player.inventory[i].name
+            pos = i + 1
+            display.put_string(39, pos, name, interface.WHITE, interface.BLACK)
+
     def __init__(self, display):
         super(PlayScene, self).__init__(display)
         display.clear()
@@ -98,20 +106,42 @@ class PlayScene(Scene):
         display.flush()
 
     def update(self, display, key):
-        if (key == 'RESIZE'):
+        if key == 'RESIZE':
             display.clear()
             self.draw_frame(display)
             self.draw_view(display)
             return
+        if key == 'DROP':
+            fg = interface.WHITE
+            bg = interface.BLACK
+            selection = 0
+            display.put_char(37, selection + 1, '>', fg, bg)
+            display.flush()
+            while key != 'SELECT':
+                key = display.get_input()
+                display.put_char(37, selection + 1, ' ', 0, 0)
+                if key == 'UP':
+                    selection -= 1
+                    if selection < 0:
+                        selection = len(self.player.inventory) - 1
+                if key == 'DOWN':
+                    selection += 1
+                    if selection >= len(self.player.inventory):
+                        selection = 0
+                display.put_char(37, selection + 1, '>', fg, bg)
+                display.flush()
+            self.player.lose(selection)
+            return
+                
         direction = directions.from_key(key)
-        if (direction != directions.INVALID):
+        if direction != directions.INVALID:
             self.player.move(direction)
             tile = self.tilemap.get(self.player.x, self.player.y)
 
-            if (tile.solid):
+            if tile.solid:
                 self.player.move_back()
             
-            if (type(tile) == Water):
+            if type(tile) == Water:
                 fish = tile.fish()
                 if fish != None:
                     self.log('You catch a fish!')
@@ -119,7 +149,7 @@ class PlayScene(Scene):
                 else:
                     self.log('You disturb the water.')
 
-            if (type(tile) == Tree):
+            if type(tile) == Tree:
                 log = tile.chop()
                 if log != None:
                     self.log('You cut down the tree, and aquire some logs')
@@ -129,6 +159,7 @@ class PlayScene(Scene):
         self.update_and_draw_view(display)
 
         self.draw_entity(self.player_id, display)
+        self.draw_inventory(display)
 
         self.print_log(display)
 
