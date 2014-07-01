@@ -11,7 +11,7 @@ k:UP
 l:RIGHT
 j:DOWN
 h:LEFT
-c:DROP"""
+d:DROP"""
 
 bindings = {'KEY_RESIZE':'RESIZE'}
 

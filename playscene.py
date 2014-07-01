@@ -130,7 +130,7 @@ class PlayScene(Scene):
                         selection = 0
                 display.put_char(37, selection + 1, '>', fg, bg)
                 display.flush()
-            self.player.lose(selection)
+            self.entities.insert(0, self.player.drop(selection))
             return
                 
         direction = directions.from_key(key)
@@ -158,7 +158,8 @@ class PlayScene(Scene):
         self.camera.center_on(self.player.x, self.player.y)
         self.update_and_draw_view(display)
 
-        self.draw_entity(self.player_id, display)
+        for i in range(len(self.entities)):
+            self.draw_entity(i, display)
         self.draw_inventory(display)
 
         self.print_log(display)
