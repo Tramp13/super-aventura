@@ -89,6 +89,31 @@ class PlayScene(Scene):
             pos = i + 1
             display.put_string(39, pos, name, interface.WHITE, interface.BLACK)
 
+    def select_item(self, display):
+        fg = interface.WHITE
+        bg = interface.BLACK
+        selection = 0
+        display.put_char(37, selection + 1, '>', fg, bg)
+        display.flush()
+        while True:
+            key = display.get_input()
+            display.put_char(37, selection + 1, ' ', 0, 0)
+            if key == 'UP':
+                selection -= 1
+                if selection < 0:
+                    selection = len(self.player.inventory) - 1
+            if key == 'DOWN':
+                selection += 1
+                if selection >= len(self.player.inventory):
+                    selection = 0
+            if key == 'SELECT':
+                break
+            if key == 'q':
+                return
+            display.put_char(37, selection + 1, '>', fg, bg)
+            display.flush()
+        return selection
+
     def __init__(self, display):
         super(PlayScene, self).__init__(display)
         display.clear()
@@ -111,32 +136,14 @@ class PlayScene(Scene):
             self.draw_frame(display)
             self.draw_view(display)
             return
+        #if key == 'APPLY':
+        #    self.log('Apply what? (Directional keys to select.)')
+        #    self.print_log(display)
+            
         if key == 'DROP':
             self.log('Drop what? (Directional keys to select.)')
             self.print_log(display)
-            fg = interface.WHITE
-            bg = interface.BLACK
-            selection = 0
-            display.put_char(37, selection + 1, '>', fg, bg)
-            display.flush()
-            while True:
-                key = display.get_input()
-                display.put_char(37, selection + 1, ' ', 0, 0)
-                if key == 'UP':
-                    selection -= 1
-                    if selection < 0:
-                        selection = len(self.player.inventory) - 1
-                if key == 'DOWN':
-                    selection += 1
-                    if selection >= len(self.player.inventory):
-                        selection = 0
-                if key == 'DROP' or key == 'SELECT':
-                    break
-                if key == 'q':
-                    return
-                display.put_char(37, selection + 1, '>', fg, bg)
-                display.flush()
-            item = self.player.drop(selection)
+            item = self.player.drop(self.select_item(display))
             self.entities.insert(0, item)
             self.log('You drop the ' + item.name + '.')
             self.draw_inventory(display)
