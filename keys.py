@@ -5,7 +5,7 @@ default_bindings = """KEY_UP:UP
 KEY_RIGHT:RIGHT
 KEY_DOWN:DOWN
 KEY_LEFT:LEFT
-x:SELECT
+s:SELECT
 q:QUIT
 k:UP
 l:RIGHT
