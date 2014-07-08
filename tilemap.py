@@ -35,5 +35,8 @@ class Tilemap(object):
     def get(self, x, y):
         return self.tiles[(y * self.width) + x]
 
+    def set(self, x, y, tile):
+        self.tiles[(y * self.width) + x] = tile
+
     def __iter__(self):
         return iter(self.tiles)

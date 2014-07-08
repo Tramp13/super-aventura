@@ -1,7 +1,8 @@
 from scene import Scene
 from tilemap import Tilemap
 from player import Player
-from tiles import Water, Tree
+from tiles import Water, Tree, Fire
+from items import Log, TinderBox
 import interface
 import directions
 import keys
@@ -128,6 +129,7 @@ class PlayScene(Scene):
         self.player_id = 0
         self.entities = [self.player]
         self.draw_entity(0, display)
+        self.draw_inventory(display)
         display.flush()
 
     def update(self, display, key):
@@ -149,7 +151,34 @@ class PlayScene(Scene):
             self.draw_inventory(display)
             self.print_log(display)
             return
-                
+        if key == 'APPLY':
+            self.log('Apply what? (Directional keys to select.)')
+            self.print_log(display)
+            item = self.player.inventory[self.select_item(display)]
+            self.log('Apply ' + item.name + ' in which direction?')
+            self.print_log(display)
+            direction = directions.from_key(display.get_input())
+            if direction != directions.INVALID:
+                delta_x, delta_y = directions.delta(direction)
+                tile_x = self.player.x + delta_x
+                tile_y = self.player.y + delta_y
+                for i in self.entities:
+                    if i.x == tile_x and i.y == tile_y:
+                        if type(i) == Log and type(item) == TinderBox:
+                            self.entities.remove(i)
+                            self.tilemap.set(tile_x,
+                                             tile_y,
+                                             Fire(tile_x, tile_y))
+                            self.draw_tile(tile_x, tile_y, display)
+                            self.log('You make a fire')
+                            self.print_log(display)
+                            break
+
+            else:
+                self.log('Uh, that\'s not a direction')
+                self.print_log(display)
+            return
+            
         direction = directions.from_key(key)
         if direction != directions.INVALID:
             self.player.move(direction)

@@ -62,3 +62,12 @@ class Tree(Entity):
             self.ticks_since_chopped += 1
             if (self.ticks_since_chopped > 30):
                 self.grow()
+
+class Fire(Entity):
+    def __init__(self, x, y):
+        sprite = Sprite('&', interface.YELLOW, interface.BLACK, False)
+        self.colors = [interface.YELLOW, interface.RED]
+        super(Fire, self).__init__(x, y, 'fire', sprite)
+
+    def update(self):
+        self.sprite.fg = random.choice(self.colors)
