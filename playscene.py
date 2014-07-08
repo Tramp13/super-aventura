@@ -119,7 +119,7 @@ class PlayScene(Scene):
         super(PlayScene, self).__init__(display)
         display.clear()
         self.log_messages = []
-        self.tilemap = Tilemap('map.txt')
+        self.tilemap = Tilemap()
         self.draw_frame(display)
         self.camera = Camera(35, 15, self.tilemap.width, self.tilemap.height)
 
