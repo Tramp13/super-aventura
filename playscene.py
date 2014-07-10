@@ -2,7 +2,7 @@ from scene import Scene
 from tilemap import Tilemap
 from player import Player
 from tiles import Water, Tree, Fire
-from items import Log, TinderBox
+from items import Log, TinderBox, Fish
 import interface
 import directions
 import keys
@@ -173,6 +173,16 @@ class PlayScene(Scene):
                             self.log('You make a fire')
                             self.print_log(display)
                             break
+                if type(self.tilemap.get(tile_x, tile_y)) == Fire:
+                    if type(item) == Fish:
+                        old_name = item.name
+                        if item.cook():
+                            self.log('You cook the ' + old_name +
+                                     ' into ' + item.name)
+                            self.draw_inventory(display)
+                        else:
+                            self.log('Uh, don\'t cook that')
+                        self.print_log(display)
 
             else:
                 self.log('Uh, that\'s not a direction')

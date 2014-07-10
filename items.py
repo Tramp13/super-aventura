@@ -6,6 +6,7 @@ class Fish(Entity):
     def __init__(self):
         sprite = Sprite('%', interface.WHITE, interface.BLACK, False)
         super(Fish, self).__init__(0, 0, 'fish', sprite)
+        self.cookable = True
 
 class Log(Entity):
     def __init__(self):

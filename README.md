@@ -3,12 +3,12 @@ Adventure
 Wow! Fishing! Fire making! Tree cutting!
 
 Default Controls (Keybindings are stored in ~/.adventure/keys.txt):
-  * h, j, k, l: Movement
-  * up, down, left, right: Also movement
-  * a: apply
-  * s: select
-  * d: drop
-  * q: quit
+* h, j, k, l: Movement
+* up, down, left, right: Also movement
+* a: apply
+* s: select
+* d: drop
+* q: quit
 
 Tutorial
 --------
@@ -34,3 +34,8 @@ next to is a brighter blue. brighter blue means there's a fish there. Try to
 walk into the brighter blue water tile, and you'll catch a fish! (Walking into
 water with no fish will just disturb the water, and no fish will go there. So,
 you can't just spam a directional key into a water tile)
+
+### Let's cook a fish!
+Now that you've made a fire, and caught a fish, let's walk over to a tile
+that is adjacent to your fire. Press your apply key, and select your fish. Then
+press the movement key that points to the fire. Yay, you cooked a fish!
