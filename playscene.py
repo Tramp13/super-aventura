@@ -2,7 +2,7 @@ from scene import Scene
 from tilemap import Tilemap
 from player import Player
 from tiles import Water, Tree, Fire
-from items import Log, TinderBox, Fish
+from items import Log, TinderBox, Fish, Axe, FishingRod
 import interface
 import directions
 import keys
@@ -54,11 +54,22 @@ class PlayScene(Scene):
                          sprite.bg,
                          sprite.bold)
 
-    def draw_entity(self, entity_id, display):
+    def draw_entity_at(self, entity_id, display):
         x = (self.entities[entity_id].x - self.camera.x) + 1
         y = (self.entities[entity_id].y - self.camera.y) + 1
         sprite = self.entities[entity_id].sprite
         display.put_char(x, y, sprite.char, sprite.fg, sprite.bg, sprite.bold)
+
+    def draw_entity(self, entity, display):
+        x = (entity.x - self.camera.x) + 1
+        y = (entity.y - self.camera.y) + 1
+        sprite = entity.sprite
+        display.put_char(x, y, sprite.char, sprite.fg, sprite.bg, sprite.bold)
+
+    def draw_entities(self, display):
+        for i in self.entities:
+            if self.camera.is_visible(i.x, i.y):
+                self.draw_entity(i, display)
 
     def print_log(self, display):
         width, height = display.get_size()
@@ -128,7 +139,13 @@ class PlayScene(Scene):
         self.player = Player(self.camera.half_width, self.camera.half_height)
         self.player_id = 0
         self.entities = [self.player]
-        self.draw_entity(0, display)
+        rod = FishingRod()
+        (rod.x, rod.y) = (10, 15)
+        axe = Axe()
+        (axe.x, axe.y) = (28, 5)
+        self.entities.insert(0, rod)
+        self.entities.insert(0, axe)
+        self.draw_entities(display)
         self.draw_inventory(display)
         display.flush()
 
@@ -151,6 +168,34 @@ class PlayScene(Scene):
             self.draw_inventory(display)
             self.print_log(display)
             return
+
+        if key == 'EAT':
+            self.log('Eat what? (Directional keys to select.)')
+            self.print_log(display)
+            item = self.select_item(display)
+            if self.player.inventory[item].edible:
+                self.log('You eat the ' + self.player.inventory[item].name + '.')
+                self.player.drop(item)
+            else:
+                self.log('That doesn\'t look very tasty.')
+            self.draw_inventory(display)
+            self.print_log(display)
+            return
+
+        if key == 'SELECT':
+            tile = self.tilemap.get(self.player.x, self.player.y)
+            for i in self.entities:
+                if i.x == tile.x and i.y == tile.y and i.name != 'player':
+                    self.log('You pick up the ' + i.name)
+                    self.print_log(display)
+                    self.player.pickup(self.entities.pop(self.entities.index(i)))
+                    self.draw_inventory(display)
+                    return
+            self.log('There\'s nothing here to pickup.')
+            self.print_log(display)
+            return
+                    
+
         if key == 'APPLY':
             self.log('Apply what? (Directional keys to select.)')
             self.print_log(display)
@@ -198,7 +243,11 @@ class PlayScene(Scene):
                 self.player.move_back()
             
             if type(tile) == Water:
-                fish = tile.fish()
+                fish = None
+                for i in self.player.inventory:
+                    if type(i) == FishingRod:
+                        fish = tile.fish()
+                        break
                 if fish != None:
                     self.log('You catch a fish!')
                     self.player.inventory.append(fish)
@@ -206,16 +255,21 @@ class PlayScene(Scene):
                     self.log('You disturb the water.')
 
             if type(tile) == Tree:
-                log = tile.chop()
+                log = None
+                for i in self.player.inventory:
+                    if type(i) == Axe:
+                        log = tile.chop()
+                        break
                 if log != None:
                     self.log('You cut down the tree, and aquire some logs')
                     self.player.inventory.append(log)
+                else:    
+                    self.log('It would be very painful to chop down a tree with your fist')
 
         self.camera.center_on(self.player.x, self.player.y)
         self.update_and_draw_view(display)
 
-        for i in range(len(self.entities)):
-            self.draw_entity(i, display)
+        self.draw_entities(display)
         self.draw_inventory(display)
 
         self.print_log(display)

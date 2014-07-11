@@ -24,6 +24,14 @@ class Camera:
         if (target_y + self.half_height >= self.bottom_boundry):
             self.y = self.bottom_boundry - self.height
 
+    def is_visible(self, x, y):
+        if (x >= self.x and
+           y >= self.y and
+           x < self.x + self.width and
+           y < self.y + self.height):
+            return True
+        return False
+
     # This function iterates through all cells that are visible to the camera
     def __iter__(self):
         cells = []

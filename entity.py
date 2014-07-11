@@ -15,6 +15,7 @@ class Entity(object):
         self.facing = directions.NORTH
         self.cooked = RAW
         self.cookable = False
+        self.edible = False
         self.inventory = []
 
     def update(self):
@@ -36,6 +37,9 @@ class Entity(object):
         item.x = self.x
         item.y = self.y
         return item
+
+    def pickup(self, item):
+        self.inventory.append(item)
 
     def cook(self):
         if self.cookable == False:

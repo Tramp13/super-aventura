@@ -3,12 +3,13 @@ Adventure
 Wow! Fishing! Fire making! Tree cutting!
 
 Default Controls (Keybindings are stored in ~/.adventure/keys.txt):
-* h, j, k, l: Movement
-* up, down, left, right: Also movement
-* a: apply
-* s: select
-* d: drop
-* q: quit
++ h, j, k, l: Movement
++ up, down, left, right: Also movement
++ a: apply
++ s: select
++ d: drop
++ q: quit
++ e: eat
 
 Tutorial
 --------
@@ -39,3 +40,6 @@ you can't just spam a directional key into a water tile)
 Now that you've made a fire, and caught a fish, let's walk over to a tile
 that is adjacent to your fire. Press your apply key, and select your fish. Then
 press the movement key that points to the fire. Yay, you cooked a fish!
+
+### Let's eat a fish!
+Press your eat button, select fish, yay!
