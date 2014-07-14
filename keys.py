@@ -18,9 +18,9 @@ e:EAT"""
 bindings = {'KEY_RESIZE':'RESIZE'}
 
 def load_bindings():
-    if (os.path.isdir(os.path.expanduser('~/.adventure')) == False):
+    if os.path.isdir(os.path.expanduser('~/.adventure')) == False:
         os.makedirs(os.path.expanduser('~/.adventure'))
-    if (os.path.exists(os.path.expanduser('~/.adventure/keys.txt')) == False):
+    if os.path.exists(os.path.expanduser('~/.adventure/keys.txt')) == False:
         binding_file = open(os.path.expanduser('~/.adventure/keys.txt'), 'w')
         binding_file.write(default_bindings)
         binding_file.close()

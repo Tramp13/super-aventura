@@ -11,7 +11,7 @@ def char_to_entity(x, y, char):
     if (char == 'T'):
         return Tree(x, y)
     if (char == '.'):
-        sprite = Sprite(char, interface.GREEN, interface.BLACK, False)
+        sprite = Sprite.get('GRASS')
         solid = False
         name = 'grass'
     if (char == '~'):

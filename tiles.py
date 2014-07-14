@@ -6,10 +6,9 @@ import random
 
 class Water(Entity):
     def __init__(self, x, y):
-        sprite = Sprite('~', interface.BLUE, interface.BLACK, False)
         self.disturbed = False
         self.has_fish = True
-        super(Water, self).__init__(x, y, 'water', sprite)
+        super(Water, self).__init__(x, y, 'water', Sprite.get('WATER'))
 
     def fish(self):
         self.disturbed = True
@@ -19,30 +18,29 @@ class Water(Entity):
         else:
             return None
 
+    def disturb(self):
+        self.disturbed = True
+
     def update(self):
         if (self.disturbed):
-            self.sprite.bold = False
-            self.sprite.fg = interface.WHITE
+            self.sprite = Sprite.get('WATER_DISTURBED')
             self.disturbed = False
             return
-        else:
-            self.sprite.fg = interface.BLUE
         self.has_fish = True if random.random() < .05 else False
         if (self.has_fish):
-            self.sprite.bold = True
+            self.sprite = Sprite.get('WATER_ACTIVE')
         else:
-            self.sprite.bold = False
+            self.sprite = Sprite.get('WATER')
 
 class Tree(Entity):
     def __init__(self, x, y):
-        sprite = Sprite('T', interface.GREEN, interface.BLACK, False)
         self.chopped = False
         self.ticks_since_chopped = 0
-        super(Tree, self).__init__(x, y, 'tree', sprite)
+        super(Tree, self).__init__(x, y, 'tree', Sprite.get('TREE'))
 
     def chop(self):
         if (self.chopped == False):
-            sprite = Sprite('.', interface.GREEN, interface.BLACK, False)
+            sprite = Sprite.get('GRASS')
             self.chopped = True
             self.solid = False
             self.sprite = sprite
@@ -51,11 +49,10 @@ class Tree(Entity):
             return None
 
     def grow(self):
-        sprite = Sprite('T', interface.GREEN, interface.BLACK, False)
         self.chopped = False
         self.ticks_since_chopped = 0
         self.solid = True
-        self.sprite = sprite
+        self.sprite = Sprite.get('TREE')
 
     def update(self):
         if (self.chopped):
@@ -65,9 +62,8 @@ class Tree(Entity):
 
 class Fire(Entity):
     def __init__(self, x, y):
-        sprite = Sprite('&', interface.YELLOW, interface.BLACK, False)
-        self.colors = [interface.YELLOW, interface.RED]
-        super(Fire, self).__init__(x, y, 'fire', sprite)
+        super(Fire, self).__init__(x, y, 'fire', Sprite.get('FIRE1'))
 
     def update(self):
-        self.sprite.fg = random.choice(self.colors)
+        self.sprite.fg = random.choice([Sprite.get('FIRE1'),
+                                        Sprite.get('FIRE2')])

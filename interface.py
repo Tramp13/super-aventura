@@ -10,6 +10,26 @@ MAGENTA = curses.COLOR_MAGENTA
 CYAN = curses.COLOR_CYAN
 WHITE = curses.COLOR_WHITE
 
+def string_to_color(color_string):
+    if color_string == 'BLACK':
+        return BLACK
+    elif color_string == 'RED':
+        return RED
+    elif color_string == 'GREEN':
+        return GREEN
+    elif color_string == 'YELLOW':
+        return YELLOW
+    elif color_string == 'BLUE':
+        return BLUE
+    elif color_string == 'MAGENTA':
+        return MAGENTA
+    elif color_string == 'CYAN':
+        return CYAN
+    elif color_string == 'WHITE':
+        return WHITE
+    else:
+        return 0
+
 def get_color_pair(fg, bg):
     return fg + (bg * 8) + 1
 

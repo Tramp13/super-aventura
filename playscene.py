@@ -41,7 +41,8 @@ class PlayScene(Scene):
         for i in self.camera:
             self.tilemap.get(i.x, i.y).update()
             self.draw_tile(i.x, i.y, display)
-                
+        self.update_entities()
+        self.draw_entities(display)
 
     def draw_tile(self, x, y, display):
         display_x = (x - self.camera.x) + 1
@@ -70,6 +71,11 @@ class PlayScene(Scene):
         for i in self.entities:
             if self.camera.is_visible(i.x, i.y):
                 self.draw_entity(i, display)
+
+    def update_entities(self):
+        for i in self.entities:
+            if self.camera.is_visible(i.x, i.y):
+                i.update()
 
     def print_log(self, display):
         width, height = display.get_size()
@@ -155,9 +161,6 @@ class PlayScene(Scene):
             self.draw_frame(display)
             self.draw_view(display)
             return
-        #if key == 'APPLY':
-        #    self.log('Apply what? (Directional keys to select.)')
-        #    self.print_log(display)
             
         if key == 'DROP':
             self.log('Drop what? (Directional keys to select.)')
@@ -194,7 +197,6 @@ class PlayScene(Scene):
             self.log('There\'s nothing here to pickup.')
             self.print_log(display)
             return
-                    
 
         if key == 'APPLY':
             self.log('Apply what? (Directional keys to select.)')
@@ -252,6 +254,7 @@ class PlayScene(Scene):
                     self.log('You catch a fish!')
                     self.player.inventory.append(fish)
                 else:
+                    tile.disturb()
                     self.log('You disturb the water.')
 
             if type(tile) == Tree:
@@ -269,7 +272,6 @@ class PlayScene(Scene):
         self.camera.center_on(self.player.x, self.player.y)
         self.update_and_draw_view(display)
 
-        self.draw_entities(display)
         self.draw_inventory(display)
 
         self.print_log(display)

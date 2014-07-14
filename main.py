@@ -4,9 +4,11 @@ import interface
 import scene
 import curses
 from startscene import StartScene
+from sprite import load_sprites
 
 def main(stdscr):
     display = interface.Interface(stdscr)
+    load_sprites()
     current_scene = None
 
     def switch_scene(scene):
