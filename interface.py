@@ -9,6 +9,7 @@ BLUE = curses.COLOR_BLUE
 MAGENTA = curses.COLOR_MAGENTA
 CYAN = curses.COLOR_CYAN
 WHITE = curses.COLOR_WHITE
+TRANSPARENT = 9
 
 def string_to_color(color_string):
     if color_string == 'BLACK':
@@ -27,6 +28,8 @@ def string_to_color(color_string):
         return CYAN
     elif color_string == 'WHITE':
         return WHITE
+    elif color_string == 'TRANSPARENT':
+        return TRANSPARENT
     else:
         return 0
 

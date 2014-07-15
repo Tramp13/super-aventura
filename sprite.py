@@ -1,14 +1,21 @@
 import os
 from interface import string_to_color
 
-default_sprites = """PLAYER @ WHITE BLACK FALSE
+default_sprites = '''PLAYER @ WHITE BLACK FALSE
 WATER ~ BLUE BLACK FALSE
 WATER_DISTURBED ~ WHITE BLACK FALSE
 WATER_ACTIVE ~ BLUE BLACK TRUE
 GRASS . GREEN BLACK FALSE
 TREE T GREEN BLACK FALSE
 FIRE1 & YELLOW BLACK FALSE
-FIRE2 & RED BLACK FALSE"""
+FIRE2 & RED BLACK FALSE
+FISH % WHITE BLACK FALSE
+TINDER_BOX [ WHITE BLACK FALSE
+FISHING_ROD [ WHITE BLACK FALSE
+AXE / WHITE BLACK FALSE
+LOG x WHITE BLACK FALSE
+WHEAT " YELLOW BLACK FALSE
+CHICKEN c WHITE BLACK FALSE'''
 
 sprites = {}
 
@@ -34,6 +41,8 @@ def load_sprites():
     sprites_data = sprites_file.read().split('\n')
     for i in sprites_data:
         sprite_data = i.split(' ')
+        if len(sprite_data) < 2:
+            continue
         name = sprite_data[0]
         char = sprite_data[1]
         fg = string_to_color(sprite_data[2])

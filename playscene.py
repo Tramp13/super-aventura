@@ -1,7 +1,8 @@
 from scene import Scene
 from tilemap import Tilemap
 from player import Player
-from tiles import Water, Tree, Fire
+from chicken import Chicken
+from tiles import Water, Tree, Fire, Wheat
 from items import Log, TinderBox, Fish, Axe, FishingRod
 import interface
 import directions
@@ -65,7 +66,10 @@ class PlayScene(Scene):
         x = (entity.x - self.camera.x) + 1
         y = (entity.y - self.camera.y) + 1
         sprite = entity.sprite
-        display.put_char(x, y, sprite.char, sprite.fg, sprite.bg, sprite.bold)
+        bg = entity.sprite.bg
+        if bg == interface.TRANSPARENT:
+            bg = self.tilemap.get(entity.x, entity.y).sprite.bg
+        display.put_char(x, y, sprite.char, sprite.fg, bg, sprite.bold)
 
     def draw_entities(self, display):
         for i in self.entities:
@@ -76,6 +80,9 @@ class PlayScene(Scene):
         for i in self.entities:
             if self.camera.is_visible(i.x, i.y):
                 i.update()
+                tile = self.tilemap.get(i.x, i.y)
+                if tile.solid:
+                   i.move_back() 
 
     def print_log(self, display):
         width, height = display.get_size()
@@ -144,7 +151,8 @@ class PlayScene(Scene):
 
         self.player = Player(self.camera.half_width, self.camera.half_height)
         self.player_id = 0
-        self.entities = [self.player]
+        self.entities = self.tilemap.entities
+        self.entities.append(self.player)
         rod = FishingRod()
         (rod.x, rod.y) = (10, 15)
         axe = Axe()
@@ -189,9 +197,17 @@ class PlayScene(Scene):
             tile = self.tilemap.get(self.player.x, self.player.y)
             for i in self.entities:
                 if i.x == tile.x and i.y == tile.y and i.name != 'player':
-                    self.log('You pick up the ' + i.name)
+                    self.log('You pick up the ' + i.name + '.')
                     self.print_log(display)
                     self.player.pickup(self.entities.pop(self.entities.index(i)))
+                    self.draw_inventory(display)
+                    return
+            if type(tile) == Wheat:
+                wheat = tile.pick()
+                if wheat != None:
+                    self.log('You pick some wheat.')
+                    self.print_log(display)
+                    self.player.pickup(wheat)
                     self.draw_inventory(display)
                     return
             self.log('There\'s nothing here to pickup.')
@@ -219,6 +235,17 @@ class PlayScene(Scene):
                             self.draw_tile(tile_x, tile_y, display)
                             self.log('You make a fire')
                             self.print_log(display)
+                            break
+                        if type(i) == Chicken:
+                            if type(item) == Wheat:
+                                i.owner = self.player
+                                self.log('The chicken happily eats the wheat ' +
+                                         'and decides to join you in your ' +
+                                         'adventures.')
+                                self.print_log(display)
+                            else:
+                                self.log('The chicken doesn\'t seem to want ' +
+                                         'that.')
                             break
                 if type(self.tilemap.get(tile_x, tile_y)) == Fire:
                     if type(item) == Fish:
@@ -258,16 +285,20 @@ class PlayScene(Scene):
                     self.log('You disturb the water.')
 
             if type(tile) == Tree:
-                log = None
-                for i in self.player.inventory:
-                    if type(i) == Axe:
+                if tile.chopped == False:
+                    has_axe = False
+                    log = None
+                    for i in self.player.inventory:
+                        if type(i) == Axe:
+                            has_axe = True
+                            break
+                    if has_axe:
                         log = tile.chop()
-                        break
-                if log != None:
-                    self.log('You cut down the tree, and aquire some logs')
-                    self.player.inventory.append(log)
-                else:    
-                    self.log('It would be very painful to chop down a tree with your fist')
+                        self.log('You cut down the tree, and aquire some logs')
+                        self.player.pickup(log)
+                    else:    
+                        self.log('It would be very painful to chop down a ' +
+                                 'tree with your fist')
 
         self.camera.center_on(self.player.x, self.player.y)
         self.update_and_draw_view(display)

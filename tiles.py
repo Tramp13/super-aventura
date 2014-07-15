@@ -37,6 +37,7 @@ class Tree(Entity):
         self.chopped = False
         self.ticks_since_chopped = 0
         super(Tree, self).__init__(x, y, 'tree', Sprite.get('TREE'))
+        self.solid = True
 
     def chop(self):
         if (self.chopped == False):
@@ -67,3 +68,33 @@ class Fire(Entity):
     def update(self):
         self.sprite.fg = random.choice([Sprite.get('FIRE1'),
                                         Sprite.get('FIRE2')])
+
+class Wheat(Entity):
+    def __init__(self, x, y):
+        sprite = Sprite.get('WHEAT')
+        super(Wheat, self).__init__(x, y, 'wheat', sprite)
+        self.picked = False
+        self.ticks_since_picked = 0
+        self.solid = False
+
+    def pick(self):
+        if (self.picked == False):
+            sprite = Sprite.get('GRASS')
+            self.picked = True
+            self.solid = False
+            self.sprite = sprite
+            return Wheat(0, 0)
+        else:
+            return None
+
+    def grow(self):
+        self.picked = False
+        self.ticks_since_picked = 0
+        self.solid = True
+        self.sprite = Sprite.get('WHEAT')
+
+    def update(self):
+        if (self.picked):
+            self.ticks_since_picked += 1
+            if (self.ticks_since_picked > 30):
+                self.grow()
