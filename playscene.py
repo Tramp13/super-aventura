@@ -32,7 +32,7 @@ class PlayScene(Scene):
         display.put_char(0, height - 1, curses.ACS_LLCORNER, fg, bg)
         display.put_char(width - 1, height - 1, curses.ACS_LRCORNER, fg, bg)
         display.put_char(width - 1, 0, curses.ACS_URCORNER, fg, bg)
-        display.put_char(width, - 1, 16, curses.ACS_RTEE, fg, bg)
+        display.put_char(width - 1, 16, curses.ACS_RTEE, fg, bg)
 
     def draw_view(self, display):
         for i in self.camera:

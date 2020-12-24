@@ -59,7 +59,8 @@ class Interface(object):
         try:
             self.stdscr.addch(y, x, char, attribute)
         except curses.error:
-            pass
+            print("error in put_char")
+            print(curses.error)
 
     def put_string(self, x, y, string, fg, bg, bold = False):
         for char in string:

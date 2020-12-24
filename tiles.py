@@ -66,7 +66,7 @@ class Fire(Entity):
         super(Fire, self).__init__(x, y, 'fire', Sprite.get('FIRE1'))
 
     def update(self):
-        self.sprite.fg = random.choice([Sprite.get('FIRE1'),
+        self.sprite = random.choice([Sprite.get('FIRE1'),
                                         Sprite.get('FIRE2')])
 
 class Wheat(Entity):
